@@ -58,9 +58,9 @@ RUN \
 	mkdir .n8n && \
 	chown node:node .n8n
 RUN \
-	npm config set noproxy $NO_PROXY && \
-	npm config set proxy $HTTP_PROXY && \
-	npm config set https-proxy $HTTPS_PROXY
+	echo "proxy=$HTTP_PROXY" >> /home/node/.npmrc && \
+	echo "https-proxy=$HTTPS_PROXY" >> /home/node/.npmrc && \
+	echo "noproxy=$NO_PROXY" >> /home/node/.npmrc
 ENV SHELL /bin/sh
 USER node
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
