@@ -57,7 +57,10 @@ RUN \
 	ln -s /usr/local/lib/node_modules/n8n/bin/n8n /usr/local/bin/n8n && \
 	mkdir .n8n && \
 	chown node:node .n8n
-
+RUN \
+	npm config set noproxy $NO_PROXY && \
+	npm config set proxy $HTTP_PROXY && \
+	npm config set https-proxy $HTTPS_PROXY
 ENV SHELL /bin/sh
 USER node
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]

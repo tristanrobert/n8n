@@ -24,6 +24,7 @@ import { License } from '@/license';
 import { LoadNodesAndCredentials } from '@/load-nodes-and-credentials';
 import { Publisher } from '@/scaling/pubsub/publisher.service';
 import { toError } from '@/utils';
+import { ProxyAgent } from 'proxy-agent';
 
 const DEFAULT_REGISTRY = 'https://registry.npmjs.org';
 
@@ -224,11 +225,13 @@ export class CommunityPackagesService {
 		const N8N_BACKEND_SERVICE_URL = 'https://api.n8n.io/api/package';
 
 		try {
-			const response = await axios.post<CommunityPackages.PackageStatusCheck>(
-				N8N_BACKEND_SERVICE_URL,
-				{ name: packageName },
-				{ method: 'POST' },
-			);
+			const response = await axios
+				.create({ proxy: false, httpsAgent: new ProxyAgent() })
+				.post<CommunityPackages.PackageStatusCheck>(
+					N8N_BACKEND_SERVICE_URL,
+					{ name: packageName },
+					{ method: 'POST' },
+				);
 
 			if (response.data.status !== NPM_PACKAGE_STATUS_GOOD) return response.data;
 		} catch {
