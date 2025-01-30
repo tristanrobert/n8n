@@ -57,10 +57,7 @@ RUN \
 	ln -s /usr/local/lib/node_modules/n8n/bin/n8n /usr/local/bin/n8n && \
 	mkdir .n8n && \
 	chown node:node .n8n
-RUN \
-	echo "proxy=$HTTP_PROXY" >> /home/node/.npmrc && \
-	echo "https-proxy=$HTTPS_PROXY" >> /home/node/.npmrc && \
-	echo "noproxy=$NO_PROXY" >> /home/node/.npmrc
+
 ENV SHELL /bin/sh
 USER node
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]

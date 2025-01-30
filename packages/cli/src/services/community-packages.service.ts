@@ -226,11 +226,12 @@ export class CommunityPackagesService {
 
 		try {
 			const response = await axios
-				.create({ proxy: false, httpsAgent: new ProxyAgent() })
+				.create({ proxy: false })
 				.post<CommunityPackages.PackageStatusCheck>(
 					N8N_BACKEND_SERVICE_URL,
 					{ name: packageName },
-					{ method: 'POST' },
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+					{ method: 'POST', httpsAgent: new ProxyAgent() },
 				);
 
 			if (response.data.status !== NPM_PACKAGE_STATUS_GOOD) return response.data;
