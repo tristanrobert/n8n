@@ -69,6 +69,7 @@ import { Logger } from '@/logging/logger';
 
 import { binaryToString } from './binary-helper-functions';
 import { parseIncomingMessage } from './parse-incoming-message';
+import { ProxyAgent } from 'proxy-agent';
 
 axios.defaults.timeout = 300000;
 // Prevent axios from adding x-form-www-urlencoded headers by default
@@ -203,6 +204,10 @@ export async function invokeAxios(
 	authOptions: IRequestOptions['auth'] = {},
 ) {
 	try {
+		if (!axiosConfig.proxy) {
+			axiosConfig.proxy = false;
+			axiosConfig.httpsAgent = new ProxyAgent();
+		}
 		return await axios(axiosConfig);
 	} catch (error) {
 		if (authOptions.sendImmediately !== false || !(error instanceof axios.AxiosError)) throw error;

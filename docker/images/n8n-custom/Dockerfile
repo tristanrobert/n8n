@@ -35,6 +35,7 @@ COPY docker/images/n8n/docker-entrypoint.sh /
 ARG TARGETPLATFORM
 ARG LAUNCHER_VERSION=1.1.1
 COPY docker/images/n8n/n8n-task-runners.json /etc/n8n-task-runners.json
+RUN apk add wget
 # Download, verify, then extract the launcher binary
 RUN \
 	if [[ "$TARGETPLATFORM" = "linux/amd64" ]]; then export ARCH_NAME="amd64"; \
@@ -48,7 +49,8 @@ RUN \
 	sha256sum -c checksum.sha256 && \
 	tar xvf task-runner-launcher-${LAUNCHER_VERSION}-linux-${ARCH_NAME}.tar.gz --directory=/usr/local/bin && \
 	cd - && \
-	rm -r /launcher-temp
+	rm -r /launcher-temp && \
+	apk del wget
 
 RUN \
 	cd /usr/local/lib/node_modules/n8n && \

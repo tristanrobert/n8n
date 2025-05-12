@@ -8,6 +8,7 @@ import type { PackageDirectoryLoader } from 'n8n-core';
 import { InstanceSettings, Logger } from 'n8n-core';
 import { UnexpectedError, UserError, type PublicInstalledPackage } from 'n8n-workflow';
 import { promisify } from 'util';
+import { ProxyAgent } from 'proxy-agent';
 
 import {
 	NODE_PACKAGE_PREFIX,
@@ -224,11 +225,13 @@ export class CommunityPackagesService {
 		const N8N_BACKEND_SERVICE_URL = 'https://api.n8n.io/api/package';
 
 		try {
-			const response = await axios.post<CommunityPackages.PackageStatusCheck>(
-				N8N_BACKEND_SERVICE_URL,
-				{ name: packageName },
-				{ method: 'POST' },
-			);
+			const response = await axios
+				.create({ proxy: false })
+				.post<CommunityPackages.PackageStatusCheck>(
+					N8N_BACKEND_SERVICE_URL,
+					{ name: packageName },
+					{ method: 'POST', httpsAgent: new ProxyAgent() },
+				);
 
 			if (response.data.status !== NPM_PACKAGE_STATUS_GOOD) return response.data;
 		} catch {
